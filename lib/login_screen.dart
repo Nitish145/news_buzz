@@ -7,10 +7,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
-  @override
-  void initState() {
-    super.initState();
-  }
+  final _loginFormKey = GlobalKey<FormState>();
+  final _signupFormKey = GlobalKey<FormState>();
 
   Widget homePage() {
     return new Container(
@@ -156,6 +154,7 @@ class _LoginScreenState extends State<LoginScreen>
           ),
         ),
         child: Form(
+          key: _loginFormKey,
           child: new ListView(
             children: <Widget>[
               Container(
@@ -363,6 +362,7 @@ class _LoginScreenState extends State<LoginScreen>
         ),
       ),
       child: Form(
+        key: _signupFormKey,
         child: new ListView(
           children: <Widget>[
             Container(
