@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
+import 'package:news_buzz/authentication.dart';
+import 'package:news_buzz/root_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,17 +10,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'NewsBuzz',
       theme: ThemeData(
-        primarySwatch: Colors.red,
-        cursorColor: Colors.red
-      ),
-      home: LoginScreen(),
+          primaryColor: Colors.redAccent,
+          primaryColorDark: Colors.red,
+          primarySwatch: Colors.red,
+          cursorColor: Colors.red),
+      home: new RootPage(Auth()),
     );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return null;
   }
 }

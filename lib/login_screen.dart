@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:news_buzz/authentication.dart';
 
 class LoginScreen extends StatefulWidget {
+  final BaseAuth auth;
+  final VoidCallback onSignedIn;
+
+  const LoginScreen({Key key, this.auth, this.onSignedIn}) : super(key: key);
+
   @override
   _LoginScreenState createState() => new _LoginScreenState();
 }
@@ -9,6 +15,97 @@ class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
   final _loginFormKey = GlobalKey<FormState>();
   final _signupFormKey = GlobalKey<FormState>();
+
+  String _email = "";
+  String _password = "";
+
+  String _loginErrorMessage = "";
+  String _signupErrorMessage = "";
+
+  // Check if form is valid before signup
+  bool _validateSignupAndSave() {
+    final form = _signupFormKey.currentState;
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+
+  // Check if form is valid before login
+  bool _validateLoginAndSave() {
+    final form = _loginFormKey.currentState;
+    if (form.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
+  }
+
+  void _showVerifyEmailSentDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(
+            "Verify your account",
+            style: TextStyle(color: Theme.of(context).primaryColorDark),
+          ),
+          content: new Text(
+            "Link to verify account has been sent to your email",
+            style: TextStyle(color: Colors.black38),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Dismiss"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _validateLoginAndSubmit() async {
+    if (_validateLoginAndSave()) {
+      try {
+        String userId = await widget.auth.signIn(_email, _password);
+        print("Signed in: $userId");
+        widget.auth.isEmailVerified().then((isEmailVerified) {
+          if (isEmailVerified) {
+            widget.onSignedIn();
+          } else {
+            setState(() {
+              _loginErrorMessage =
+                  "Please verify your email to log into your account";
+            });
+          }
+        });
+      } catch (e) {
+        setState(() {
+          _loginErrorMessage = e.message.toString();
+        });
+      }
+    }
+  }
+
+  Future<void> _validateSignupAndSubmit() async {
+    if (_validateSignupAndSave()) {
+      try {
+        String userId = await widget.auth.signUp(_email, _password);
+        print("Signed Up: $userId");
+        await widget.auth.sendEmailVerification();
+        _showVerifyEmailSentDialog();
+      } catch (e) {
+        setState(() {
+          _signupErrorMessage = e.message.toString();
+        });
+      }
+    }
+  }
 
   Widget homePage() {
     return new Container(
@@ -22,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen>
           fit: BoxFit.cover,
         ),
       ),
-      child: new Column(
+      child: new ListView(
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(top: 200.0),
@@ -179,7 +276,6 @@ class _LoginScreenState extends State<LoginScreen>
                   children: <Widget>[
                     new Expanded(
                       child: TextFormField(
-                        obscureText: true,
                         textAlign: TextAlign.left,
                         decoration: InputDecoration(
                           labelText: "Email",
@@ -192,6 +288,16 @@ class _LoginScreenState extends State<LoginScreen>
                               borderSide: BorderSide(
                                   color: Colors.redAccent, width: 5.0)),
                         ),
+                        validator: (email) {
+                          bool isEmailValid =
+                              RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(email);
+                          if (!isEmailValid) {
+                            return "Please Enter a valid e-mail";
+                          }
+                          return null;
+                        },
+                        onSaved: (email) => _email = email,
                       ),
                     ),
                   ],
@@ -225,6 +331,15 @@ class _LoginScreenState extends State<LoginScreen>
                               borderSide: BorderSide(
                                   color: Colors.redAccent, width: 5.0)),
                         ),
+                        validator: (String password) {
+                          if (password.isEmpty) {
+                            return "Please Enter Password";
+                          }
+                          return null;
+                        },
+                        onSaved: (String password) {
+                          _password = password;
+                        },
                       ),
                     ),
                   ],
@@ -253,6 +368,15 @@ class _LoginScreenState extends State<LoginScreen>
                   ),
                 ],
               ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  child: Text(
+                    _loginErrorMessage,
+                    style: TextStyle(color: Colors.black54, fontSize: 15),
+                  ),
+                ),
+              ),
               new Container(
                 width: MediaQuery.of(context).size.width,
                 margin:
@@ -266,7 +390,7 @@ class _LoginScreenState extends State<LoginScreen>
                           borderRadius: new BorderRadius.circular(30.0),
                         ),
                         color: Colors.redAccent,
-                        onPressed: () => {},
+                        onPressed: () async => await _validateLoginAndSubmit(),
                         child: new Container(
                           padding: const EdgeInsets.symmetric(
                             vertical: 10.0,
@@ -366,7 +490,7 @@ class _LoginScreenState extends State<LoginScreen>
         child: new ListView(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.all(90.0),
+              padding: EdgeInsets.fromLTRB(120.0, 120.0, 120.0, 90.0),
               child: Center(
                 child: Icon(
                   Icons.person_add,
@@ -386,7 +510,6 @@ class _LoginScreenState extends State<LoginScreen>
                 children: <Widget>[
                   new Expanded(
                     child: TextFormField(
-                      obscureText: true,
                       textAlign: TextAlign.left,
                       decoration: InputDecoration(
                         labelText: "Email",
@@ -399,6 +522,16 @@ class _LoginScreenState extends State<LoginScreen>
                             borderSide: BorderSide(
                                 color: Colors.redAccent, width: 5.0)),
                       ),
+                      validator: (email) {
+                        bool isEmailValid =
+                            RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(email);
+                        if (!isEmailValid) {
+                          return "Please Enter a valid e-mail";
+                        }
+                        return null;
+                      },
+                      onSaved: (email) => _email = email,
                     ),
                   ),
                 ],
@@ -421,7 +554,7 @@ class _LoginScreenState extends State<LoginScreen>
                       obscureText: true,
                       textAlign: TextAlign.left,
                       decoration: InputDecoration(
-                        labelText: "Enter Password",
+                        labelText: "Password",
                         labelStyle: TextStyle(
                             color: Colors.redAccent,
                             fontSize: 20,
@@ -431,6 +564,15 @@ class _LoginScreenState extends State<LoginScreen>
                             borderSide: BorderSide(
                                 color: Colors.redAccent, width: 5.0)),
                       ),
+                      validator: (String password) {
+                        if (password.isEmpty) {
+                          return "Please Enter Password";
+                        }
+                        return null;
+                      },
+                      onSaved: (String password) {
+                        _password = password;
+                      },
                     ),
                   ),
                 ],
@@ -439,57 +581,14 @@ class _LoginScreenState extends State<LoginScreen>
             Divider(
               height: 24.0,
             ),
-            new Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-              alignment: Alignment.center,
-              padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-              child: new Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  new Expanded(
-                    child: TextFormField(
-                      obscureText: true,
-                      textAlign: TextAlign.left,
-                      decoration: InputDecoration(
-                        labelText: "Confirm Password",
-                        labelStyle: TextStyle(
-                            color: Colors.redAccent,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w300),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide(
-                                color: Colors.redAccent, width: 5.0)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Divider(
-              height: 24.0,
-            ),
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: new InkWell(
-                    child: new Text(
-                      "Already have an account?",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.redAccent,
-                        fontSize: 15.0,
-                      ),
-                      textAlign: TextAlign.end,
-                    ),
-                    onTap: () => {},
-                  ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                child: Text(
+                  _signupErrorMessage,
+                  style: TextStyle(color: Colors.black54, fontSize: 15),
                 ),
-              ],
+              ),
             ),
             new Container(
               width: MediaQuery.of(context).size.width,
@@ -503,7 +602,10 @@ class _LoginScreenState extends State<LoginScreen>
                         borderRadius: new BorderRadius.circular(30.0),
                       ),
                       color: Colors.redAccent,
-                      onPressed: () => {},
+                      onPressed: () async {
+                        await _validateSignupAndSubmit();
+                        _signupFormKey.currentState.reset();
+                      },
                       child: new Container(
                         padding: const EdgeInsets.symmetric(
                           vertical: 10.0,
