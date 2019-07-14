@@ -76,6 +76,9 @@ class _LoginScreenState extends State<LoginScreen>
         print("Signed in: $userId");
         widget.auth.isEmailVerified().then((isEmailVerified) {
           if (isEmailVerified) {
+            setState(() {
+              _loginErrorMessage = "";
+            });
             widget.onSignedIn();
           } else {
             setState(() {
@@ -97,6 +100,9 @@ class _LoginScreenState extends State<LoginScreen>
       try {
         String userId = await widget.auth.signUp(_email, _password);
         print("Signed Up: $userId");
+        setState(() {
+          _signupErrorMessage = "";
+        });
         await widget.auth.sendEmailVerification();
         _showVerifyEmailSentDialog();
       } catch (e) {
@@ -236,6 +242,10 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Widget loginPage() {
+    setState(() {
+      _loginErrorMessage = "";
+    });
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
@@ -485,179 +495,184 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Widget signupPage() {
-    return new Container(
-      height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        image: DecorationImage(
-          colorFilter: new ColorFilter.mode(
-              Colors.black.withOpacity(0.05), BlendMode.dstATop),
-          image: AssetImage('assets/images/mountains.jpg'),
-          fit: BoxFit.cover,
+    setState(() {
+      _signupErrorMessage = "";
+    });
+
+    return Scaffold(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          image: DecorationImage(
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(0.05), BlendMode.dstATop),
+            image: AssetImage('assets/images/mountains.jpg'),
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-      child: Form(
-        key: _signupFormKey,
-        child: new ListView(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.fromLTRB(120.0, 120.0, 120.0, 90.0),
-              child: Center(
-                child: Icon(
-                  Icons.person_add,
-                  color: Colors.redAccent,
-                  size: 50.0,
-                ),
-              ),
-            ),
-            new Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-              alignment: Alignment.center,
-              padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-              child: new Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  new Expanded(
-                    child: TextFormField(
-                      textAlign: TextAlign.left,
-                      decoration: InputDecoration(
-                        labelText: "Email",
-                        labelStyle: TextStyle(
-                            color: Colors.redAccent,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w300),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide(
-                                color: Colors.redAccent, width: 5.0)),
-                      ),
-                      validator: (email) {
-                        bool isEmailValid =
-                            RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                .hasMatch(email);
-                        if (!isEmailValid) {
-                          return "Please Enter a valid e-mail";
-                        }
-                        return null;
-                      },
-                      onSaved: (email) => _email = email,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Divider(
-              height: 24.0,
-            ),
-            new Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-              alignment: Alignment.center,
-              padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-              child: new Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  new Expanded(
-                    child: TextFormField(
-                      obscureText: true,
-                      textAlign: TextAlign.left,
-                      decoration: InputDecoration(
-                        labelText: "Password",
-                        labelStyle: TextStyle(
-                            color: Colors.redAccent,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w300),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide(
-                                color: Colors.redAccent, width: 5.0)),
-                      ),
-                      validator: (String password) {
-                        if (password.isEmpty) {
-                          return "Please Enter Password";
-                        }
-                        return null;
-                      },
-                      onSaved: (String password) {
-                        _password = password;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Divider(
-              height: 24.0,
-            ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Container(
-                  child: Text(
-                    _signupErrorMessage,
-                    style: TextStyle(color: Colors.black54, fontSize: 15),
+        child: Form(
+          key: _signupFormKey,
+          child: new ListView(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.fromLTRB(120.0, 120.0, 120.0, 90.0),
+                child: Center(
+                  child: Icon(
+                    Icons.person_add,
+                    color: Colors.redAccent,
+                    size: 50.0,
                   ),
                 ),
               ),
-            ),
-            new Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.only(left: 30.0, right: 30.0, top: 50.0),
-              alignment: Alignment.center,
-              child: new Row(
-                children: <Widget>[
-                  new Expanded(
-                    child: new FlatButton(
-                      shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(30.0),
-                      ),
-                      color: Colors.redAccent,
-                      onPressed: () async {
-                        await _validateSignupAndSubmit();
-                        if (_validateSignupAndSave()) {
-                          _signupFormKey.currentState.reset();
-                        }
-                      },
-                      child: new Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 10.0,
-                          horizontal: 10.0,
+              new Container(
+                width: MediaQuery.of(context).size.width,
+                margin:
+                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                child: new Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    new Expanded(
+                      child: TextFormField(
+                        textAlign: TextAlign.left,
+                        decoration: InputDecoration(
+                          labelText: "Email",
+                          labelStyle: TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w300),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide(
+                                  color: Colors.redAccent, width: 5.0)),
                         ),
-                        child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            new Expanded(
-                              child: Text(
-                                "SIGN UP",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                        validator: (email) {
+                          bool isEmailValid =
+                              RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(email);
+                          if (!isEmailValid) {
+                            return "Please Enter a valid e-mail";
+                          }
+                          return null;
+                        },
+                        onSaved: (email) => _email = email,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 24.0,
+              ),
+              new Container(
+                width: MediaQuery.of(context).size.width,
+                margin:
+                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                child: new Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    new Expanded(
+                      child: TextFormField(
+                        obscureText: true,
+                        textAlign: TextAlign.left,
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          labelStyle: TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w300),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide(
+                                  color: Colors.redAccent, width: 5.0)),
+                        ),
+                        validator: (String password) {
+                          if (password.isEmpty) {
+                            return "Please Enter Password";
+                          }
+                          return null;
+                        },
+                        onSaved: (String password) {
+                          _password = password;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                height: 24.0,
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Container(
+                    child: Text(
+                      _signupErrorMessage,
+                      style: TextStyle(color: Colors.black54, fontSize: 15),
+                    ),
+                  ),
+                ),
+              ),
+              new Container(
+                width: MediaQuery.of(context).size.width,
+                margin:
+                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 50.0),
+                alignment: Alignment.center,
+                child: new Row(
+                  children: <Widget>[
+                    new Expanded(
+                      child: new FlatButton(
+                        shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0),
+                        ),
+                        color: Colors.redAccent,
+                        onPressed: () async {
+                          await _validateSignupAndSubmit();
+                          if (_validateSignupAndSave()) {
+                            _signupFormKey.currentState.reset();
+                          }
+                        },
+                        child: new Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10.0,
+                            horizontal: 10.0,
+                          ),
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              new Expanded(
+                                child: Text(
+                                  "SIGN UP",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   navigateToLogin() {
-    _loginFormKey.currentState.reset();
-    setState(() {
-      _loginErrorMessage = "";
-    });
     _controller.animateToPage(
       0,
       duration: Duration(milliseconds: 800),
@@ -666,10 +681,6 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   navigateToSignup() {
-    _signupFormKey.currentState.reset();
-    setState(() {
-      _signupErrorMessage = "";
-    });
     _controller.animateToPage(
       2,
       duration: Duration(milliseconds: 800),
