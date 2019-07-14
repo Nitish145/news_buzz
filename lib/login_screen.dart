@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:news_buzz/authentication.dart';
+import 'globals.dart';
+import 'progress_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final BaseAuth auth;
@@ -72,23 +74,29 @@ class _LoginScreenState extends State<LoginScreen>
   Future<void> _validateLoginAndSubmit() async {
     if (_validateLoginAndSave()) {
       try {
+        setState(() {
+          isProgressing = true;
+        });
         String userId = await widget.auth.signIn(_email, _password);
         print("Signed in: $userId");
         widget.auth.isEmailVerified().then((isEmailVerified) {
           if (isEmailVerified) {
             setState(() {
               _loginErrorMessage = "";
+              isProgressing = false;
             });
             widget.onSignedIn();
           } else {
             setState(() {
+              isProgressing = false;
               _loginErrorMessage =
-                  "Please verify your email to log into your account";
+              "Please verify your email to log into your account";
             });
           }
         });
       } catch (e) {
         setState(() {
+          isProgressing = false;
           _loginErrorMessage = e.message.toString();
         });
       }
@@ -98,15 +106,20 @@ class _LoginScreenState extends State<LoginScreen>
   Future<void> _validateSignupAndSubmit() async {
     if (_validateSignupAndSave()) {
       try {
+        setState(() {
+          isProgressing = true;
+        });
         String userId = await widget.auth.signUp(_email, _password);
         print("Signed Up: $userId");
         setState(() {
+          isProgressing = false;
           _signupErrorMessage = "";
         });
         await widget.auth.sendEmailVerification();
         _showVerifyEmailSentDialog();
       } catch (e) {
         setState(() {
+          isProgressing = false;
           _signupErrorMessage = e.message.toString();
         });
       }
@@ -114,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Widget homePage() {
-    return new Container(
+    return Container(
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
         color: Colors.redAccent,
@@ -242,432 +255,462 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Widget loginPage() {
-    setState(() {
-      _loginErrorMessage = "";
-    });
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          image: DecorationImage(
-            colorFilter: new ColorFilter.mode(
-                Colors.black.withOpacity(0.05), BlendMode.dstATop),
-            image: AssetImage('assets/images/mountains.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Form(
-          key: _loginFormKey,
-          child: new ListView(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.fromLTRB(120.0, 90.0, 120.0, 50.0),
-                child: Center(
-                  child: Icon(
-                    Icons.account_circle,
-                    color: Colors.redAccent,
-                    size: 70.0,
-                  ),
-                ),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            height: MediaQuery
+                .of(context)
+                .size
+                .height,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              image: DecorationImage(
+                colorFilter: new ColorFilter.mode(
+                    Colors.black.withOpacity(0.05), BlendMode.dstATop),
+                image: AssetImage('assets/images/mountains.jpg'),
+                fit: BoxFit.cover,
               ),
-              new Container(
-                width: MediaQuery.of(context).size.width,
-                margin:
-                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-                child: new Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    new Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.left,
-                        decoration: InputDecoration(
-                          labelText: "Email",
-                          labelStyle: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w300),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                  color: Colors.redAccent, width: 5.0)),
-                        ),
-                        validator: (email) {
-                          bool isEmailValid =
-                              RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                  .hasMatch(email);
-                          if (!isEmailValid) {
-                            return "Please Enter a valid e-mail";
-                          }
-                          return null;
-                        },
-                        onSaved: (email) => _email = email,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Divider(
-                height: 24.0,
-              ),
-              new Container(
-                width: MediaQuery.of(context).size.width,
-                margin:
-                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-                child: new Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    new Expanded(
-                      child: TextFormField(
-                        obscureText: true,
-                        textAlign: TextAlign.left,
-                        decoration: InputDecoration(
-                          labelText: "Password",
-                          labelStyle: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w300),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                  color: Colors.redAccent, width: 5.0)),
-                        ),
-                        validator: (String password) {
-                          if (password.isEmpty) {
-                            return "Please Enter Password";
-                          }
-                          return null;
-                        },
-                        onSaved: (String password) {
-                          _password = password;
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Divider(
-                height: 24.0,
-              ),
-              new Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+            ),
+            child: Form(
+              key: _loginFormKey,
+              child: new ListView(
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: new InkWell(
-                      child: new Text(
-                        "Forgot Password?",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.redAccent,
-                          fontSize: 15.0,
-                        ),
-                        textAlign: TextAlign.end,
+                  Container(
+                    padding: EdgeInsets.fromLTRB(120.0, 90.0, 120.0, 50.0),
+                    child: Center(
+                      child: Icon(
+                        Icons.account_circle,
+                        color: Colors.redAccent,
+                        size: 70.0,
                       ),
-                      onTap: () => {},
                     ),
                   ),
+                  new Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    margin: const EdgeInsets.only(
+                        left: 40.0, right: 40.0, top: 10.0),
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                    child: new Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        new Expanded(
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            decoration: InputDecoration(
+                              labelText: "Email",
+                              labelStyle: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w300),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: BorderSide(
+                                      color: Colors.redAccent, width: 5.0)),
+                            ),
+                            validator: (email) {
+                              bool isEmailValid = RegExp(
+                                  r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(email);
+                              if (!isEmailValid) {
+                                return "Please Enter a valid e-mail";
+                              }
+                              return null;
+                            },
+                            onSaved: (email) => _email = email,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    height: 24.0,
+                  ),
+                  new Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    margin: const EdgeInsets.only(
+                        left: 40.0, right: 40.0, top: 10.0),
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                    child: new Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        new Expanded(
+                          child: TextFormField(
+                            obscureText: true,
+                            textAlign: TextAlign.left,
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              labelStyle: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w300),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: BorderSide(
+                                      color: Colors.redAccent, width: 5.0)),
+                            ),
+                            validator: (String password) {
+                              if (password.isEmpty) {
+                                return "Please Enter Password";
+                              }
+                              return null;
+                            },
+                            onSaved: (String password) {
+                              _password = password;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    height: 24.0,
+                  ),
+                  new Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: new InkWell(
+                          child: new Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.redAccent,
+                              fontSize: 15.0,
+                            ),
+                            textAlign: TextAlign.end,
+                          ),
+                          onTap: () => {},
+                        ),
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(25.0),
+                      child: Container(
+                        child: Text(
+                          _loginErrorMessage,
+                          style: TextStyle(color: Colors.black54, fontSize: 15),
+                        ),
+                      ),
+                    ),
+                  ),
+                  new Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    margin: const EdgeInsets.only(
+                        left: 30.0, right: 30.0, top: 20.0),
+                    alignment: Alignment.center,
+                    child: new Row(
+                      children: <Widget>[
+                        new Expanded(
+                          child: new FlatButton(
+                            shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(30.0),
+                            ),
+                            color: Colors.redAccent,
+                            onPressed: () async {
+                              await _validateLoginAndSubmit();
+                              if (_validateLoginAndSave()) {
+                                _loginFormKey.currentState.reset();
+                              }
+                            },
+                            child: new Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 10.0,
+                                horizontal: 10.0,
+                              ),
+                              child: new Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  new Expanded(
+                                    child: Text(
+                                      "LOGIN",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  new Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    margin: const EdgeInsets.only(
+                        left: 30.0, right: 30.0, top: 20.0),
+                    alignment: Alignment.center,
+                    child: Row(
+                      children: <Widget>[
+                        new Expanded(
+                          child: new Container(
+                            margin: EdgeInsets.all(8.0),
+                            decoration:
+                            BoxDecoration(border: Border.all(width: 0.25)),
+                          ),
+                        ),
+                        Text(
+                          "OR CONNECT WITH",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        new Expanded(
+                          child: new Container(
+                            margin: EdgeInsets.all(8.0),
+                            decoration:
+                            BoxDecoration(border: Border.all(width: 0.25)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: InkWell(
+                            child: new CircleAvatar(
+                              radius: 35,
+                              backgroundColor: Colors.transparent,
+                              backgroundImage:
+                              Image
+                                  .asset("assets/images/google_icon.png")
+                                  .image,
+                            ),
+                            onTap: () async {
+                              String uid = await widget.auth.signInWithGoogle();
+                              print("Signed in: $uid");
+                              widget.onSignedIn();
+                            }),
+                      ),
+                    ),
+                  )
                 ],
               ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(25.0),
-                  child: Container(
-                    child: Text(
-                      _loginErrorMessage,
-                      style: TextStyle(color: Colors.black54, fontSize: 15),
-                    ),
-                  ),
-                ),
-              ),
-              new Container(
-                width: MediaQuery.of(context).size.width,
-                margin:
-                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0),
-                alignment: Alignment.center,
-                child: new Row(
-                  children: <Widget>[
-                    new Expanded(
-                      child: new FlatButton(
-                        shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0),
-                        ),
-                        color: Colors.redAccent,
-                        onPressed: () async {
-                          await _validateLoginAndSubmit();
-                          if (_validateLoginAndSave()) {
-                            _loginFormKey.currentState.reset();
-                          }
-                        },
-                        child: new Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10.0,
-                            horizontal: 10.0,
-                          ),
-                          child: new Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              new Expanded(
-                                child: Text(
-                                  "LOGIN",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              new Container(
-                width: MediaQuery.of(context).size.width,
-                margin:
-                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 20.0),
-                alignment: Alignment.center,
-                child: Row(
-                  children: <Widget>[
-                    new Expanded(
-                      child: new Container(
-                        margin: EdgeInsets.all(8.0),
-                        decoration:
-                            BoxDecoration(border: Border.all(width: 0.25)),
-                      ),
-                    ),
-                    Text(
-                      "OR CONNECT WITH",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    new Expanded(
-                      child: new Container(
-                        margin: EdgeInsets.all(8.0),
-                        decoration:
-                            BoxDecoration(border: Border.all(width: 0.25)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Center(
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: InkWell(
-                        child: new CircleAvatar(
-                          radius: 35,
-                          backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              Image.asset("assets/images/google_icon.png")
-                                  .image,
-                        ),
-                        onTap: () async {
-                          String uid = await widget.auth.signInWithGoogle();
-                          print("Signed in: $uid");
-                          widget.onSignedIn();
-                        }),
-                  ),
-                ),
-              )
-            ],
+            ),
           ),
-        ),
+          ProgressScreen(),
+        ],
       ),
     );
   }
 
   Widget signupPage() {
-    setState(() {
-      _signupErrorMessage = "";
-    });
-
     return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          image: DecorationImage(
-            colorFilter: new ColorFilter.mode(
-                Colors.black.withOpacity(0.05), BlendMode.dstATop),
-            image: AssetImage('assets/images/mountains.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Form(
-          key: _signupFormKey,
-          child: new ListView(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.fromLTRB(120.0, 120.0, 120.0, 90.0),
-                child: Center(
-                  child: Icon(
-                    Icons.person_add,
-                    color: Colors.redAccent,
-                    size: 50.0,
-                  ),
-                ),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            height: MediaQuery
+                .of(context)
+                .size
+                .height,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              image: DecorationImage(
+                colorFilter: new ColorFilter.mode(
+                    Colors.black.withOpacity(0.05), BlendMode.dstATop),
+                image: AssetImage('assets/images/mountains.jpg'),
+                fit: BoxFit.cover,
               ),
-              new Container(
-                width: MediaQuery.of(context).size.width,
-                margin:
-                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-                child: new Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    new Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.left,
-                        decoration: InputDecoration(
-                          labelText: "Email",
-                          labelStyle: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w300),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                  color: Colors.redAccent, width: 5.0)),
-                        ),
-                        validator: (email) {
-                          bool isEmailValid =
-                              RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                  .hasMatch(email);
-                          if (!isEmailValid) {
-                            return "Please Enter a valid e-mail";
-                          }
-                          return null;
-                        },
-                        onSaved: (email) => _email = email,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Divider(
-                height: 24.0,
-              ),
-              new Container(
-                width: MediaQuery.of(context).size.width,
-                margin:
-                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 10.0),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.only(left: 0.0, right: 10.0),
-                child: new Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    new Expanded(
-                      child: TextFormField(
-                        obscureText: true,
-                        textAlign: TextAlign.left,
-                        decoration: InputDecoration(
-                          labelText: "Password",
-                          labelStyle: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w300),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                  color: Colors.redAccent, width: 5.0)),
-                        ),
-                        validator: (String password) {
-                          if (password.isEmpty) {
-                            return "Please Enter Password";
-                          }
-                          return null;
-                        },
-                        onSaved: (String password) {
-                          _password = password;
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Divider(
-                height: 24.0,
-              ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(25.0),
-                  child: Container(
-                    child: Text(
-                      _signupErrorMessage,
-                      style: TextStyle(color: Colors.black54, fontSize: 15),
-                    ),
-                  ),
-                ),
-              ),
-              new Container(
-                width: MediaQuery.of(context).size.width,
-                margin:
-                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 50.0),
-                alignment: Alignment.center,
-                child: new Row(
-                  children: <Widget>[
-                    new Expanded(
-                      child: new FlatButton(
-                        shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0),
-                        ),
+            ),
+            child: Form(
+              key: _signupFormKey,
+              child: new ListView(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.fromLTRB(120.0, 120.0, 120.0, 90.0),
+                    child: Center(
+                      child: Icon(
+                        Icons.person_add,
                         color: Colors.redAccent,
-                        onPressed: () async {
-                          await _validateSignupAndSubmit();
-                          if (_validateSignupAndSave()) {
-                            _signupFormKey.currentState.reset();
-                          }
-                        },
-                        child: new Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10.0,
-                            horizontal: 10.0,
+                        size: 50.0,
+                      ),
+                    ),
+                  ),
+                  new Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    margin: const EdgeInsets.only(
+                        left: 40.0, right: 40.0, top: 10.0),
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                    child: new Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        new Expanded(
+                          child: TextFormField(
+                            textAlign: TextAlign.left,
+                            decoration: InputDecoration(
+                              labelText: "Email",
+                              labelStyle: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w300),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: BorderSide(
+                                      color: Colors.redAccent, width: 5.0)),
+                            ),
+                            validator: (email) {
+                              bool isEmailValid = RegExp(
+                                  r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(email);
+                              if (!isEmailValid) {
+                                return "Please Enter a valid e-mail";
+                              }
+                              return null;
+                            },
+                            onSaved: (email) => _email = email,
                           ),
-                          child: new Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              new Expanded(
-                                child: Text(
-                                  "SIGN UP",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    height: 24.0,
+                  ),
+                  new Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    margin: const EdgeInsets.only(
+                        left: 40.0, right: 40.0, top: 10.0),
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(left: 0.0, right: 10.0),
+                    child: new Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        new Expanded(
+                          child: TextFormField(
+                            obscureText: true,
+                            textAlign: TextAlign.left,
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              labelStyle: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w300),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: BorderSide(
+                                      color: Colors.redAccent, width: 5.0)),
+                            ),
+                            validator: (String password) {
+                              if (password.isEmpty) {
+                                return "Please Enter Password";
+                              }
+                              return null;
+                            },
+                            onSaved: (String password) {
+                              _password = password;
+                            },
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    height: 24.0,
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(25.0),
+                      child: Container(
+                        child: Text(
+                          _signupErrorMessage,
+                          style: TextStyle(color: Colors.black54, fontSize: 15),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  new Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    margin: const EdgeInsets.only(
+                        left: 30.0, right: 30.0, top: 50.0),
+                    alignment: Alignment.center,
+                    child: new Row(
+                      children: <Widget>[
+                        new Expanded(
+                          child: new FlatButton(
+                            shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(30.0),
+                            ),
+                            color: Colors.redAccent,
+                            onPressed: () async {
+                              await _validateSignupAndSubmit();
+                              if (_validateSignupAndSave()) {
+                                _signupFormKey.currentState.reset();
+                              }
+                            },
+                            child: new Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 10.0,
+                                horizontal: 10.0,
+                              ),
+                              child: new Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  new Expanded(
+                                    child: Text(
+                                      "SIGN UP",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          ProgressScreen(),
+        ],
       ),
     );
   }
