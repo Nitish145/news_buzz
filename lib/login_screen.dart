@@ -255,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen>
           child: new ListView(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.fromLTRB(120.0, 120.0, 120.0, 90.0),
+                padding: EdgeInsets.fromLTRB(120.0, 90.0, 120.0, 50.0),
                 child: Center(
                   child: Icon(
                     Icons.account_circle,
@@ -368,12 +368,14 @@ class _LoginScreenState extends State<LoginScreen>
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  child: Text(
-                    _loginErrorMessage,
-                    style: TextStyle(color: Colors.black54, fontSize: 15),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Container(
+                    child: Text(
+                      _loginErrorMessage,
+                      style: TextStyle(color: Colors.black54, fontSize: 15),
+                    ),
                   ),
                 ),
               ),
@@ -390,7 +392,12 @@ class _LoginScreenState extends State<LoginScreen>
                           borderRadius: new BorderRadius.circular(30.0),
                         ),
                         color: Colors.redAccent,
-                        onPressed: () async => await _validateLoginAndSubmit(),
+                        onPressed: () async {
+                          await _validateLoginAndSubmit();
+                          if (_validateLoginAndSave()) {
+                            _loginFormKey.currentState.reset();
+                          }
+                        },
                         child: new Container(
                           padding: const EdgeInsets.symmetric(
                             vertical: 10.0,
@@ -455,14 +462,18 @@ class _LoginScreenState extends State<LoginScreen>
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: InkWell(
-                      child: new CircleAvatar(
-                        radius: 35,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage:
-                            Image.asset("assets/images/google_icon.png").image,
-                      ),
-                      onTap: () {},
-                    ),
+                        child: new CircleAvatar(
+                          radius: 35,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              Image.asset("assets/images/google_icon.png")
+                                  .image,
+                        ),
+                        onTap: () async {
+                          String uid = await widget.auth.signInWithGoogle();
+                          print("Signed in: $uid");
+                          widget.onSignedIn();
+                        }),
                   ),
                 ),
               )
@@ -581,12 +592,14 @@ class _LoginScreenState extends State<LoginScreen>
             Divider(
               height: 24.0,
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                child: Text(
-                  _signupErrorMessage,
-                  style: TextStyle(color: Colors.black54, fontSize: 15),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Container(
+                  child: Text(
+                    _signupErrorMessage,
+                    style: TextStyle(color: Colors.black54, fontSize: 15),
+                  ),
                 ),
               ),
             ),
@@ -604,7 +617,9 @@ class _LoginScreenState extends State<LoginScreen>
                       color: Colors.redAccent,
                       onPressed: () async {
                         await _validateSignupAndSubmit();
-                        _signupFormKey.currentState.reset();
+                        if (_validateSignupAndSave()) {
+                          _signupFormKey.currentState.reset();
+                        }
                       },
                       child: new Container(
                         padding: const EdgeInsets.symmetric(
@@ -639,6 +654,10 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   navigateToLogin() {
+    _loginFormKey.currentState.reset();
+    setState(() {
+      _loginErrorMessage = "";
+    });
     _controller.animateToPage(
       0,
       duration: Duration(milliseconds: 800),
@@ -647,6 +666,10 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   navigateToSignup() {
+    _signupFormKey.currentState.reset();
+    setState(() {
+      _signupErrorMessage = "";
+    });
     _controller.animateToPage(
       2,
       duration: Duration(milliseconds: 800),
