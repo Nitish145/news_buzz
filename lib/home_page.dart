@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_buzz/authentication.dart';
+import 'logout_dialog.dart';
 
 class HomePage extends StatefulWidget {
   final BaseAuth auth;
@@ -39,7 +40,9 @@ class _HomePageState extends State<HomePage> {
                   child: CircleAvatar(
                       child: Image.asset("assets/images/logout_icon.png"))),
             ),
-            onTap: _signOut,
+            onTap: () {
+              logoutDialog(context, _signOut);
+            },
           )
         ],
       ),
