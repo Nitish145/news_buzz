@@ -51,7 +51,8 @@ class _NewsCardState extends State<NewsCard> {
                           height: MediaQuery.of(context).size.height / 4,
                           fit: BoxFit.fill,
                           placeholder: kTransparentImage,
-                          image: widget.newsArticle.urlToImage),
+                          image: widget.newsArticle.urlToImage ??
+                              "https://www.jainsusa.com/images/store/agriculture/not-available.jpg"),
                     ),
                   ),
                 ),

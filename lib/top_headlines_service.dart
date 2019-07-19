@@ -5,7 +5,8 @@ import 'package:http/http.dart' as http;
 
 Future<TopHeadlines> getTopHeadlines(String countryCode, String apiKey) async {
   String url = "https://newsapi.org";
-  String endpoint = "/v2/top-headlines?country=$countryCode&apiKey=$apiKey";
+  String endpoint =
+      "/v2/top-headlines?country=$countryCode&apiKey=$apiKey&pageSize=${30}";
   String uri = url + endpoint;
   http.Client client = new http.Client();
   try {
