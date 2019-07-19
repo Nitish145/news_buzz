@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_buzz/authentication.dart';
+import 'package:news_buzz/top_headlines.dart';
 import 'logout_dialog.dart';
 
 class HomePage extends StatefulWidget {
@@ -46,6 +47,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
+      body: ExtractTopHeadlines(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -65,7 +67,7 @@ class _HomePageState extends State<HomePage> {
               color: Colors.white,
             ),
             title: Text(
-              "Home",
+              "Headlines",
               style: TextStyle(fontSize: 15, color: Colors.white),
             ),
           ),
