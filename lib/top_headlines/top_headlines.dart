@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:news_buzz/top_headlines_service.dart';
+import 'package:news_buzz/top_headlines/top_headlines_service.dart';
 import 'package:news_buzz/globals.dart';
 import 'package:news_buzz/news_card.dart';
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:news_buzz/authentication.dart';
-import 'package:news_buzz/top_headlines.dart';
-import 'logout_dialog.dart';
+import 'package:news_buzz/authentication/authentication.dart';
+import 'package:news_buzz/navigation_screens/bookmark.dart';
+import 'package:news_buzz/navigation_screens/cateogries.dart';
+import 'package:news_buzz/navigation_screens/headlines.dart';
+import 'package:news_buzz/authentication/logout_dialog.dart';
 
 class HomePage extends StatefulWidget {
   final BaseAuth auth;
@@ -28,11 +30,31 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    ExtractTopHeadlines();
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget getDynamicBody() {
+      switch (_currentIndex) {
+        case 0:
+          {
+            return HeadlinesScreen();
+          }
+          break;
+        case 1:
+          {
+            return CateogriesScreen();
+          }
+          break;
+        case 2:
+          {
+            return BookmarkScreen();
+          }
+          break;
+      }
+      return Container();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("NewsBuzz"),
@@ -53,7 +75,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: ExtractTopHeadlines(),
+      body: getDynamicBody(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -88,20 +110,6 @@ class _HomePageState extends State<HomePage> {
             ),
             title: Text(
               "Cateogries",
-              style: TextStyle(fontSize: 15, color: Colors.white),
-            ),
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme
-                .of(context)
-                .primaryColor,
-            icon: Icon(
-              Icons.search,
-              size: 30,
-              color: Colors.white,
-            ),
-            title: Text(
-              "Search",
               style: TextStyle(fontSize: 15, color: Colors.white),
             ),
           ),

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'top_headlines_model.dart';
+import 'package:news_buzz/top_headlines/top_headlines_model.dart';
 import 'package:http/http.dart' as http;
 
 Future<TopHeadlines> getTopHeadlines(String countryCode, String apiKey) async {

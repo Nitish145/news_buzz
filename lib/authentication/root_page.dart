@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_buzz/home_page.dart';
-import 'package:news_buzz/login_screen.dart';
+import 'package:news_buzz/authentication/login_screen.dart';
 
 import 'authentication.dart';
 

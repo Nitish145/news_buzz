@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:news_buzz/authentication.dart';
-import 'package:news_buzz/root_page.dart';
+import 'package:news_buzz/authentication/authentication.dart';
+import 'package:news_buzz/authentication/root_page.dart';
 
 void main() => runApp(MyApp());
 

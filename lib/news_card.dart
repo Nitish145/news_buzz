@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:news_buzz/news_detail_screen.dart';
-import 'top_headlines_model.dart';
+import 'package:news_buzz/top_headlines/top_headlines_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class NewsCard extends StatefulWidget {
@@ -59,7 +59,7 @@ class _NewsCardState extends State<NewsCard> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 5.0),
                   child: Text(
-                    widget.newsArticle.title,
+                    widget.newsArticle.title ?? "",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     softWrap: true,
                     maxLines: 2,
@@ -69,7 +69,7 @@ class _NewsCardState extends State<NewsCard> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 5.0),
                   child: Text(
-                    widget.newsArticle.content,
+                    widget.newsArticle.content ?? "",
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
                     softWrap: true,
                     maxLines: 3,

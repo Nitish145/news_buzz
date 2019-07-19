@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:news_buzz/authentication.dart';
-import 'globals.dart';
-import 'progress_screen.dart';
+import 'package:news_buzz/authentication/authentication.dart';
+import 'package:news_buzz/globals.dart';
+import 'package:news_buzz/progress_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final BaseAuth auth;

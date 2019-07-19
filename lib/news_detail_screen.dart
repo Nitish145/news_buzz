@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:news_buzz/top_headlines_model.dart';
+import 'package:news_buzz/top_headlines/top_headlines_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class NewsDetailScreen extends StatelessWidget {
@@ -39,7 +39,7 @@ class NewsDetailScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
               child: Text(
-                newsArticle.title,
+                newsArticle.title ?? "",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
                 softWrap: true,
                 maxLines: 3,
@@ -49,7 +49,7 @@ class NewsDetailScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
               child: Text(
-                newsArticle.content,
+                newsArticle.content ?? "",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
                 softWrap: true,
                 maxLines: 12,
