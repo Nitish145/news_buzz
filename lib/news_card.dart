@@ -2,8 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:news_buzz/globals.dart';
 import 'package:news_buzz/top_headlines/top_headlines_model.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NewsCard extends StatefulWidget {
   final Article newsArticle;
@@ -19,6 +23,8 @@ class _NewsCardState extends State<NewsCard> {
 
   @override
   Widget build(BuildContext context) {
+    final Firestore databaseReference = Firestore.instance;
+
     Future<void> launchURL(BuildContext context, String url) async {
       try {
         await launch(
@@ -46,55 +52,104 @@ class _NewsCardState extends State<NewsCard> {
 
     int randomInt = randomNumberGenerator.nextInt(100);
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: GestureDetector(
-        onTap: () async {
-          await launchURL(context, widget.newsArticle.url);
-        },
-        child: Container(
-          height: MediaQuery.of(context).size.height / 2.5,
-          width: MediaQuery.of(context).size.width,
-          child: Card(
-            child: Column(
-              children: <Widget>[
-                Hero(
-                  tag: "NewsPic$randomInt",
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FittedBox(
-                      fit: BoxFit.fill,
-                      child: FadeInImage.memoryNetwork(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height / 4,
-                          fit: BoxFit.fill,
-                          placeholder: kTransparentImage,
-                          image: widget.newsArticle.urlToImage ??
-                              "https://www.jainsusa.com/images/store/agriculture/not-available.jpg"),
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      secondaryActions: <Widget>[
+        IconSlideAction(
+          caption: 'Bookmark',
+          color: Theme
+              .of(context)
+              .primaryColor,
+          icon: Icons.bookmark_border,
+          closeOnTap: true,
+          onTap: () async {
+            snackbarKey.currentState.showSnackBar(SnackBar(
+              content: Text("Article has been bookmarked"),
+              duration: Duration(seconds: 2),
+            ));
+            final FirebaseUser firebaseUser =
+            await FirebaseAuth.instance.currentUser();
+            await databaseReference
+                .collection(firebaseUser.uid)
+                .document()
+                .setData({
+              "id": widget.newsArticle.source.id,
+              "name": widget.newsArticle.source.name,
+              "author": widget.newsArticle.author,
+              "title": widget.newsArticle.title,
+              "description": widget.newsArticle.description,
+              "url": widget.newsArticle.url,
+              "urlToImage": widget.newsArticle.urlToImage,
+              "publishedAt": widget.newsArticle.publishedAt,
+              "content": widget.newsArticle.content,
+            });
+          },
+        ),
+      ],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GestureDetector(
+          onTap: () async {
+            await launchURL(context, widget.newsArticle.url);
+          },
+          child: Container(
+            height: MediaQuery
+                .of(context)
+                .size
+                .height / 2.5,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
+            child: Card(
+              child: Column(
+                children: <Widget>[
+                  Hero(
+                    tag: "NewsPic$randomInt",
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FittedBox(
+                        fit: BoxFit.fill,
+                        child: FadeInImage.memoryNetwork(
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height / 4,
+                            fit: BoxFit.fill,
+                            placeholder: kTransparentImage,
+                            image: widget.newsArticle.urlToImage ??
+                                "https://www.jainsusa.com/images/store/agriculture/not-available.jpg"),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 5.0),
-                  child: Text(
-                    widget.newsArticle.title ?? "",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                    softWrap: true,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 5.0),
+                    child: Text(
+                      widget.newsArticle.title ?? "",
+                      style:
+                      TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      softWrap: true,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 5.0),
-                  child: Text(
-                    widget.newsArticle.content ?? "",
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
-                    softWrap: true,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                )
-              ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 5.0),
+                    child: Text(
+                      widget.newsArticle.content ?? "",
+                      style:
+                      TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                      softWrap: true,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
