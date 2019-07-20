@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:news_buzz/authentication/authentication.dart';
-import 'package:news_buzz/navigation_screens/bookmark.dart';
-import 'package:news_buzz/navigation_screens/cateogries.dart';
-import 'package:news_buzz/navigation_screens/headlines.dart';
+import 'package:news_buzz/navigation_screens/bookmarkScreen.dart';
+import 'package:news_buzz/navigation_screens/cateogriesScreen.dart';
+import 'package:news_buzz/navigation_screens/headlinesScreen.dart';
 import 'package:news_buzz/authentication/logout_dialog.dart';
 
 class HomePage extends StatefulWidget {

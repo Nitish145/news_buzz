@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:news_buzz/news_detail_screen.dart';
+import 'package:news_buzz/article_webview.dart';
 import 'package:news_buzz/top_headlines/top_headlines_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -28,11 +28,14 @@ class _NewsCardState extends State<NewsCard> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewsDetailScreen(
+                  builder: (context) =>
+                  /*NewsDetailScreen(
                   newsArticle: widget.newsArticle,
                   randomIntDefiningHero: randomInt,
-                ),
-              ));
+                ),*/
+                  ArticleWebView(
+                    articleUrl: widget.newsArticle.url,
+                  )));
         },
         child: Container(
           height: MediaQuery.of(context).size.height / 2.5,

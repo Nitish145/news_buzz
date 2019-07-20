@@ -14,7 +14,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
         child: Center(
           child: Text(
             "Your Bookmarks will appear here",
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
           ),
         ),
       ),

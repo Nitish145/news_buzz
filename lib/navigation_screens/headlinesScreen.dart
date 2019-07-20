@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:news_buzz/top_headlines/top_headlines.dart';
+import 'package:news_buzz/top_headlines/retrieve_top_headlines.dart';
 
 class HeadlinesScreen extends StatefulWidget {
   @override
@@ -10,7 +10,7 @@ class _HeadlinesScreenState extends State<HeadlinesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ExtractTopHeadlines(),
+      body: RetrieveTopHeadlines(),
     );
   }
 }

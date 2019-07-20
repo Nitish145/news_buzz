@@ -12,7 +12,7 @@ class _CateogriesScreenState extends State<CateogriesScreen> {
       child: Center(
         child: Text(
           "Cateogries Screen",
-          style: TextStyle(fontSize: 20),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
         ),
       ),
     );
