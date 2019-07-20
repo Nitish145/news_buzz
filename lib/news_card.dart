@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:news_buzz/article_webview.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:news_buzz/top_headlines/top_headlines_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -19,23 +19,38 @@ class _NewsCardState extends State<NewsCard> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> launchURL(BuildContext context, String url) async {
+      try {
+        await launch(
+          url,
+          option: new CustomTabsOption(
+            toolbarColor: Theme
+                .of(context)
+                .primaryColor,
+            enableDefaultShare: true,
+            enableUrlBarHiding: true,
+            showPageTitle: true,
+            animation: new CustomTabsAnimation(
+              startEnter: 'slide_up',
+              startExit: 'android:anim/fade_out',
+              endEnter: 'android:anim/fade_in',
+              endExit: 'slide_down',
+            ),
+          ),
+        );
+      } catch (e) {
+        // An exception is thrown if browser app is not installed on Android device.
+        debugPrint(e.toString());
+      }
+    }
+
     int randomInt = randomNumberGenerator.nextInt(100);
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                  /*NewsDetailScreen(
-                  newsArticle: widget.newsArticle,
-                  randomIntDefiningHero: randomInt,
-                ),*/
-                  ArticleWebView(
-                    articleUrl: widget.newsArticle.url,
-                  )));
+        onTap: () async {
+          await launchURL(context, widget.newsArticle.url);
         },
         child: Container(
           height: MediaQuery.of(context).size.height / 2.5,
