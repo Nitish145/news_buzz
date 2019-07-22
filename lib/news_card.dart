@@ -6,6 +6,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'checkIfDocumentExists.dart';
 
 class NewsCard extends StatefulWidget {
   final Article newsArticle;
@@ -57,26 +58,35 @@ class _NewsCardState extends State<NewsCard> {
           icon: Icons.bookmark_border,
           closeOnTap: true,
           onTap: () async {
-            snackbarKey.currentState.showSnackBar(SnackBar(
-              content: Text("Article has been bookmarked"),
-              duration: Duration(seconds: 2),
-            ));
             final FirebaseUser firebaseUser =
             await FirebaseAuth.instance.currentUser();
-            await databaseReference
-                .collection(firebaseUser.uid)
-                .document(widget.newsArticle.title)
-                .setData({
-              "id": widget.newsArticle.source.id,
-              "name": widget.newsArticle.source.name,
-              "author": widget.newsArticle.author,
-              "title": widget.newsArticle.title,
-              "description": widget.newsArticle.description,
-              "url": widget.newsArticle.url,
-              "urlToImage": widget.newsArticle.urlToImage,
-              "publishedAt": widget.newsArticle.publishedAt,
-              "content": widget.newsArticle.content,
-            });
+            bool isExisting = await isDocumentExisting(
+                widget.newsArticle.title, firebaseUser.uid);
+            if (isExisting) {
+              snackbarKey.currentState.showSnackBar(SnackBar(
+                content: Text("Article has been already bookmarked"),
+                duration: Duration(seconds: 3),
+              ));
+            } else {
+              await databaseReference
+                  .collection(firebaseUser.uid)
+                  .document(widget.newsArticle.title)
+                  .setData({
+                "id": widget.newsArticle.source.id,
+                "name": widget.newsArticle.source.name,
+                "author": widget.newsArticle.author,
+                "title": widget.newsArticle.title,
+                "description": widget.newsArticle.description,
+                "url": widget.newsArticle.url,
+                "urlToImage": widget.newsArticle.urlToImage,
+                "publishedAt": widget.newsArticle.publishedAt,
+                "content": widget.newsArticle.content,
+              });
+              snackbarKey.currentState.showSnackBar(SnackBar(
+                content: Text("Article has been bookmarked"),
+                duration: Duration(seconds: 2),
+              ));
+            }
           },
         ),
       ],

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:news_buzz/home_page.dart';
 import 'package:news_buzz/authentication/login_screen.dart';
 
-import 'authentication.dart';
+import 'package:news_buzz/authentication/authentication.dart';
 
 class RootPage extends StatefulWidget {
   RootPage(this.auth);
+
   final BaseAuth auth;
 
   @override
@@ -16,13 +17,14 @@ enum AuthStatus { notSignedIn, signedIn }
 
 class _RootPageState extends State<RootPage> {
   AuthStatus authStatus = AuthStatus.notSignedIn;
+
   @override
   void initState() {
     super.initState();
     widget.auth.getCurrentUser().then((userId) {
       setState(() {
         authStatus =
-        userId == null ? AuthStatus.notSignedIn : AuthStatus.signedIn;
+            userId == null ? AuthStatus.notSignedIn : AuthStatus.signedIn;
       });
     });
   }

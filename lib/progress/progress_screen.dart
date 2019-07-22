@@ -1,5 +1,5 @@
 import 'package:news_buzz/globals.dart';
-import 'progress_bar.dart';
+import 'package:news_buzz/progress/progress_bar.dart';
 import 'package:flutter/material.dart';
 
 class ProgressScreen extends StatelessWidget {

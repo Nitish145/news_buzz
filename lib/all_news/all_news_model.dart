@@ -34,7 +34,7 @@ class AllNews {
 }
 
 class Article {
-  SourceModel source;
+  Source source;
   String author;
   String title;
   String description;
@@ -55,7 +55,7 @@ class Article {
   });
 
   factory Article.fromJson(Map<String, dynamic> json) => new Article(
-    source: SourceModel.fromJson(json["source"]),
+    source: Source.fromJson(json["source"]),
         author: json["author"],
         title: json["title"],
         description: json["description"],
@@ -77,17 +77,17 @@ class Article {
       };
 }
 
-class SourceModel {
+class Source {
   String id;
   String name;
 
-  SourceModel({
+  Source({
     this.id,
     this.name,
   });
 
-  factory SourceModel.fromJson(Map<String, dynamic> json) =>
-      new SourceModel(
+  factory Source.fromJson(Map<String, dynamic> json) =>
+      new Source(
         id: json["id"] == null ? null : json["id"],
         name: json["name"],
       );
