@@ -31,6 +31,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 child: StreamBuilder<QuerySnapshot>(
                     stream: Firestore.instance
                         .collection(snapshot.data.uid)
+                        .orderBy("creation_timestamp", descending: true)
                         .snapshots(),
                     // ignore: missing_return
                     builder: (BuildContext context,
@@ -52,7 +53,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                     .data.documents[index].data["url"],
                               );
                             });
-                      } else {
+                      } else if (querySnapshot.data == null) {
                         return Container(
                           child: Center(
                             child: ProgressBar(),

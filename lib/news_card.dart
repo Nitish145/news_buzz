@@ -72,6 +72,7 @@ class _NewsCardState extends State<NewsCard> {
                   .collection(firebaseUser.uid)
                   .document(widget.newsArticle.title)
                   .setData({
+                "creation_timestamp": DateTime.now(),
                 "id": widget.newsArticle.source.id,
                 "name": widget.newsArticle.source.name,
                 "author": widget.newsArticle.author,

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -10,13 +12,12 @@ class BookmarkedNewsCard extends StatefulWidget {
   final String content;
   final String url;
 
-  const BookmarkedNewsCard(
-      {Key key,
-      this.photoUrl,
-      this.title,
-      this.description,
-      this.content,
-      this.url})
+  const BookmarkedNewsCard({Key key,
+    this.photoUrl,
+    this.title,
+    this.description,
+    this.content,
+    this.url})
       : super(key: key);
 
   @override
@@ -55,9 +56,16 @@ class _BookmarkedNewsCardState extends State<BookmarkedNewsCard> {
         IconSlideAction(
           caption: 'Remove',
           color: Colors.grey,
-          icon: Icons.remove_circle_outline,
+          icon: Icons.close,
           closeOnTap: true,
-          onTap: () async {},
+          onTap: () async {
+            FirebaseAuth.instance.currentUser().then((firebaseUser) async {
+              await Firestore.instance
+                  .collection(firebaseUser.uid)
+                  .document(widget.title)
+                  .delete();
+            });
+          },
         ),
       ],
       child: Padding(
@@ -90,7 +98,7 @@ class _BookmarkedNewsCardState extends State<BookmarkedNewsCard> {
                     child: Text(
                       widget.title ?? "",
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                       softWrap: true,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -101,7 +109,7 @@ class _BookmarkedNewsCardState extends State<BookmarkedNewsCard> {
                     child: Text(
                       widget.content ?? "",
                       style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                      TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
                       softWrap: true,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
