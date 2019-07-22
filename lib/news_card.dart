@@ -65,7 +65,7 @@ class _NewsCardState extends State<NewsCard> {
             await FirebaseAuth.instance.currentUser();
             await databaseReference
                 .collection(firebaseUser.uid)
-                .document()
+                .document(widget.newsArticle.title)
                 .setData({
               "id": widget.newsArticle.source.id,
               "name": widget.newsArticle.source.name,

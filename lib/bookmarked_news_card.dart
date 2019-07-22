@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -58,10 +57,7 @@ class _BookmarkedNewsCardState extends State<BookmarkedNewsCard> {
           color: Colors.grey,
           icon: Icons.remove_circle_outline,
           closeOnTap: true,
-          onTap: () async {
-            final FirebaseUser firebaseUser =
-                await FirebaseAuth.instance.currentUser();
-          },
+          onTap: () async {},
         ),
       ],
       child: Padding(

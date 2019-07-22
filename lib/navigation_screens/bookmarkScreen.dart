@@ -35,7 +35,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                     // ignore: missing_return
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> querySnapshot) {
-                      if (querySnapshot.data.documents.length > 0) {
+                      if (querySnapshot.data != null) {
                         return ListView.builder(
                             itemCount: querySnapshot.data.documents.length,
                             itemBuilder: (context, index) {
