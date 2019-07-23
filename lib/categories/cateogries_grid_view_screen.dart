@@ -50,12 +50,12 @@ class _CategoriesGridViewState extends State<CategoriesGridView> {
                         ),
                         Padding(
                           padding:
-                              const EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 16.0),
+                              const EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 8.0),
                           child: Center(
                               child: Text(
                             categoriesList[index]["name"],
                             maxLines: 2,
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                            style: TextStyle(color: Colors.white, fontSize: 25 , fontFamily: "Lobster_Two"),
                           )),
                         )
                       ],

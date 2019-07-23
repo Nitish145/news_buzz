@@ -52,6 +52,15 @@ flutter:
     - assets/images/
     - assets/fonts/
 
+  fonts:
+    - family: Lobster_Two
+      fonts:
+        - asset: assets/fonts/Lobster_Two/LobsterTwo-Regular.ttf
+        - asset: assets/fonts/Lobster_Two/LobsterTwo-RegularItalic.ttf
+        - asset: assets/fonts/Lobster_Two/LobsterTwo-Bold.ttf
+        - asset: assets/fonts/Lobster_Two/LobsterTwo-BoldItalic.ttf
+          weight: 700
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

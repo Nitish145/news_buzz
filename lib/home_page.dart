@@ -58,7 +58,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("NewsBuzz"),
+        title: Text(
+          "NewsBuzz",
+          style: TextStyle(fontFamily: "Lobster_Two", fontSize: 30),
+        ),
         backgroundColor: Theme.of(context).primaryColor,
         actions: <Widget>[
           GestureDetector(
@@ -66,6 +69,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(16.0),
               child: Center(
                   child: CircleAvatar(
+                      backgroundColor: Theme.of(context).primaryColor,
                       child: Image.asset("assets/images/logout_icon.png"))),
             ),
             onTap: () {
@@ -86,10 +90,15 @@ class _HomePageState extends State<HomePage> {
         items: [
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(
+            activeIcon: Icon(
               Icons.menu,
               size: 30,
               color: Colors.white,
+            ),
+            icon: Icon(
+              Icons.menu,
+              size: 30,
+              color: Colors.black45,
             ),
             title: Text(
               "Headlines",
@@ -98,10 +107,15 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(
+            activeIcon: Icon(
               Icons.apps,
               size: 30,
               color: Colors.white,
+            ),
+            icon: Icon(
+              Icons.apps,
+              size: 30,
+              color: Colors.black45,
             ),
             title: Text(
               "Cateogries",
@@ -110,10 +124,15 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(
+            activeIcon: Icon(
               Icons.bookmark,
               size: 30,
               color: Colors.white,
+            ),
+            icon: Icon(
+              Icons.bookmark_border,
+              size: 30,
+              color: Colors.black45,
             ),
             title: Text(
               "Bookmarked",

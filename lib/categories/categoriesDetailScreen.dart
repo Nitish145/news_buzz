@@ -21,7 +21,10 @@ class _CategoriesDetailScreenState extends State<CategoriesDetailScreen> {
     return Scaffold(
       key: categoryDetailSnackbarKey,
       appBar: AppBar(
-        title: Text("${widget.categoryName} News"),
+        title: Text(
+          "${widget.categoryName} News",
+          style: TextStyle(fontFamily: "Lobster_Two", fontSize: 30),
+        ),
         centerTitle: true,
       ),
       body: FutureBuilder(

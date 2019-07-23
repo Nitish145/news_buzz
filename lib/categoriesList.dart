@@ -15,7 +15,7 @@ List categoriesList = [
   },
   {
     "id": "science-and-nature",
-    "name": "Nature",
+    "name": "Science",
     "icon": Icons.nature_people,
     "color": Colors.green[600].withOpacity(0.8)
   },
@@ -24,12 +24,6 @@ List categoriesList = [
     "name": "Sports",
     "icon": Icons.directions_bike,
     "color": Colors.deepOrange.withOpacity(0.8)
-  },
-  {
-    "id": "gaming",
-    "name": "Gaming",
-    "icon": Icons.videogame_asset,
-    "color": Colors.orange.withOpacity(0.8)
   },
   {
     "id": "general",
@@ -48,17 +42,5 @@ List categoriesList = [
     "name": "Health",
     "icon": Icons.local_hospital,
     "color": Colors.red.withOpacity(0.8)
-  },
-  {
-    "id": "music",
-    "name": "Music",
-    "icon": Icons.music_note,
-    "color": Colors.amber.withOpacity(0.8)
-  },
-  {
-    "id": "politics",
-    "name": "Politics",
-    "icon": Icons.assistant_photo,
-    "color": Colors.blueGrey.withOpacity(0.8)
   },
 ];
