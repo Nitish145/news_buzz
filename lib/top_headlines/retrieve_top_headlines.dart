@@ -15,20 +15,15 @@ class RetrieveTopHeadlines extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                   child: ProgressBar(
-                    dotOneColor: Theme
-                        .of(context)
-                        .primaryColor,
-                    dotTwoColor: Colors.grey,
-                    dotThreeColor: Theme
-                        .of(context)
-                        .primaryColor,
-                  ));
+                dotOneColor: Theme.of(context).primaryColor,
+                dotTwoColor: Colors.grey,
+                dotThreeColor: Theme.of(context).primaryColor,
+              ));
             } else if (snapshot.connectionState == ConnectionState.done) {
               return ListView.builder(
                   itemCount: snapshot.data.articles.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return NewsCard(
-                        newsArticle: snapshot.data.articles[index]);
+                    return NewsCard(newsArticle: snapshot.data.articles[index]);
                   });
             }
           }),

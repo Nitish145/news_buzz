@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen>
             setState(() {
               isProgressing = false;
               _loginErrorMessage =
-              "Please verify your email to log into your account";
+                  "Please verify your email to log into your account";
             });
           }
         });
@@ -261,10 +261,7 @@ class _LoginScreenState extends State<LoginScreen>
       body: Stack(
         children: <Widget>[
           Container(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height,
+            height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
               color: Colors.white,
               image: DecorationImage(
@@ -289,10 +286,7 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ),
                   new Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     margin: const EdgeInsets.only(
                         left: 40.0, right: 40.0, top: 10.0),
                     alignment: Alignment.center,
@@ -317,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen>
                             ),
                             validator: (email) {
                               bool isEmailValid = RegExp(
-                                  r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                      r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                   .hasMatch(email);
                               if (!isEmailValid) {
                                 return "Please Enter a valid e-mail";
@@ -334,10 +328,7 @@ class _LoginScreenState extends State<LoginScreen>
                     height: 24.0,
                   ),
                   new Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     margin: const EdgeInsets.only(
                         left: 40.0, right: 40.0, top: 10.0),
                     alignment: Alignment.center,
@@ -410,10 +401,7 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ),
                   new Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     margin: const EdgeInsets.only(
                         left: 30.0, right: 30.0, top: 20.0),
                     alignment: Alignment.center,
@@ -458,10 +446,7 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ),
                   new Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     margin: const EdgeInsets.only(
                         left: 30.0, right: 30.0, top: 20.0),
                     alignment: Alignment.center,
@@ -471,7 +456,7 @@ class _LoginScreenState extends State<LoginScreen>
                           child: new Container(
                             margin: EdgeInsets.all(8.0),
                             decoration:
-                            BoxDecoration(border: Border.all(width: 0.25)),
+                                BoxDecoration(border: Border.all(width: 0.25)),
                           ),
                         ),
                         Text(
@@ -485,7 +470,7 @@ class _LoginScreenState extends State<LoginScreen>
                           child: new Container(
                             margin: EdgeInsets.all(8.0),
                             decoration:
-                            BoxDecoration(border: Border.all(width: 0.25)),
+                                BoxDecoration(border: Border.all(width: 0.25)),
                           ),
                         ),
                       ],
@@ -502,9 +487,8 @@ class _LoginScreenState extends State<LoginScreen>
                               radius: 35,
                               backgroundColor: Colors.transparent,
                               backgroundImage:
-                              Image
-                                  .asset("assets/images/google_icon.png")
-                                  .image,
+                                  Image.asset("assets/images/google_icon.png")
+                                      .image,
                             ),
                             onTap: () async {
                               String uid = await widget.auth.signInWithGoogle();
@@ -529,10 +513,7 @@ class _LoginScreenState extends State<LoginScreen>
       body: Stack(
         children: <Widget>[
           Container(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height,
+            height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
               color: Colors.white,
               image: DecorationImage(
@@ -557,10 +538,7 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ),
                   new Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     margin: const EdgeInsets.only(
                         left: 40.0, right: 40.0, top: 10.0),
                     alignment: Alignment.center,
@@ -585,7 +563,7 @@ class _LoginScreenState extends State<LoginScreen>
                             ),
                             validator: (email) {
                               bool isEmailValid = RegExp(
-                                  r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                      r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                   .hasMatch(email);
                               if (!isEmailValid) {
                                 return "Please Enter a valid e-mail";
@@ -602,10 +580,7 @@ class _LoginScreenState extends State<LoginScreen>
                     height: 24.0,
                   ),
                   new Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     margin: const EdgeInsets.only(
                         left: 40.0, right: 40.0, top: 10.0),
                     alignment: Alignment.center,
@@ -658,10 +633,7 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ),
                   new Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     margin: const EdgeInsets.only(
                         left: 30.0, right: 30.0, top: 50.0),
                     alignment: Alignment.center,

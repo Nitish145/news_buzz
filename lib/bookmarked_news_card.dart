@@ -13,12 +13,13 @@ class BookmarkedNewsCard extends StatefulWidget {
   final String content;
   final String url;
 
-  const BookmarkedNewsCard({Key key,
-    this.photoUrl,
-    this.title,
-    this.description,
-    this.content,
-    this.url})
+  const BookmarkedNewsCard(
+      {Key key,
+      this.photoUrl,
+      this.title,
+      this.description,
+      this.content,
+      this.url})
       : super(key: key);
 
   @override
@@ -103,7 +104,7 @@ class _BookmarkedNewsCardState extends State<BookmarkedNewsCard> {
                     child: Text(
                       widget.title ?? "",
                       style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                       softWrap: true,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -114,7 +115,7 @@ class _BookmarkedNewsCardState extends State<BookmarkedNewsCard> {
                     child: Text(
                       widget.content ?? "",
                       style:
-                      TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
                       softWrap: true,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
