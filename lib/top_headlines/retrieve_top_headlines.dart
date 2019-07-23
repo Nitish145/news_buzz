@@ -24,16 +24,12 @@ class RetrieveTopHeadlines extends StatelessWidget {
                         .primaryColor,
                   ));
             } else if (snapshot.connectionState == ConnectionState.done) {
-              return Stack(
-                children: <Widget>[
-                  ListView.builder(
-                      itemCount: snapshot.data.articles.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return NewsCard(
-                            newsArticle: snapshot.data.articles[index]);
-                      })
-                ],
-              );
+              return ListView.builder(
+                  itemCount: snapshot.data.articles.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return NewsCard(
+                        newsArticle: snapshot.data.articles[index]);
+                  });
             }
           }),
     );

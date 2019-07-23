@@ -11,7 +11,7 @@ class _HeadlinesScreenState extends State<HeadlinesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: snackbarKey,
+      key: topHeadlinesSnackbarKey,
       body: RetrieveTopHeadlines(),
     );
   }

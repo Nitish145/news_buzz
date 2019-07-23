@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:news_buzz/globals.dart';
 
 class BookmarkedNewsCard extends StatefulWidget {
   final String photoUrl;
@@ -65,6 +66,10 @@ class _BookmarkedNewsCardState extends State<BookmarkedNewsCard> {
                   .document(widget.title)
                   .delete();
             });
+            bookmarkSnackbarKey.currentState.showSnackBar(SnackBar(
+              content: Text("Article Removed"),
+              duration: Duration(seconds: 3),
+            ));
           },
         ),
       ],

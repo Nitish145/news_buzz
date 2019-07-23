@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:news_buzz/authentication/authentication.dart';
+import 'package:news_buzz/categories/cateogries_grid_view_screen.dart';
 import 'package:news_buzz/navigation_screens/bookmarkScreen.dart';
-import 'package:news_buzz/navigation_screens/cateogriesScreen.dart';
 import 'package:news_buzz/navigation_screens/headlinesScreen.dart';
 import 'package:news_buzz/authentication/logout_dialog.dart';
 
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
           break;
         case 1:
           {
-            return CateogriesScreen();
+            return CategoriesGridView();
           }
           break;
         case 2:
@@ -57,6 +57,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("NewsBuzz"),
         backgroundColor: Theme
             .of(context)

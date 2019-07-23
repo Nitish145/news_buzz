@@ -6,18 +6,18 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'checkIfDocumentExists.dart';
+import 'package:news_buzz/checkIfDocumentExists.dart';
 
-class NewsCard extends StatefulWidget {
+class CategoryNewsCard extends StatefulWidget {
   final Article newsArticle;
 
-  const NewsCard({Key key, this.newsArticle}) : super(key: key);
+  const CategoryNewsCard({Key key, this.newsArticle}) : super(key: key);
 
   @override
-  _NewsCardState createState() => _NewsCardState();
+  _CategoryNewsCardState createState() => _CategoryNewsCardState();
 }
 
-class _NewsCardState extends State<NewsCard> {
+class _CategoryNewsCardState extends State<CategoryNewsCard> {
   @override
   Widget build(BuildContext context) {
     final Firestore databaseReference = Firestore.instance;
@@ -27,9 +27,7 @@ class _NewsCardState extends State<NewsCard> {
         await launch(
           url,
           option: new CustomTabsOption(
-            toolbarColor: Theme
-                .of(context)
-                .primaryColor,
+            toolbarColor: Theme.of(context).primaryColor,
             enableDefaultShare: true,
             enableUrlBarHiding: true,
             showPageTitle: true,
@@ -52,18 +50,16 @@ class _NewsCardState extends State<NewsCard> {
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: 'Bookmark',
-          color: Theme
-              .of(context)
-              .primaryColor,
+          color: Theme.of(context).primaryColor,
           icon: Icons.bookmark_border,
           closeOnTap: true,
           onTap: () async {
             final FirebaseUser firebaseUser =
-            await FirebaseAuth.instance.currentUser();
+                await FirebaseAuth.instance.currentUser();
             bool isExisting = await isDocumentExisting(
                 widget.newsArticle.title, firebaseUser.uid);
             if (isExisting) {
-              topHeadlinesSnackbarKey.currentState.showSnackBar(SnackBar(
+              categoryDetailSnackbarKey.currentState.showSnackBar(SnackBar(
                 content: Text("Article already bookmarked"),
                 duration: Duration(seconds: 3),
               ));
@@ -83,7 +79,7 @@ class _NewsCardState extends State<NewsCard> {
                 "publishedAt": widget.newsArticle.publishedAt,
                 "content": widget.newsArticle.content,
               });
-              topHeadlinesSnackbarKey.currentState.showSnackBar(SnackBar(
+              categoryDetailSnackbarKey.currentState.showSnackBar(SnackBar(
                 content: Text("Article Saved"),
                 duration: Duration(seconds: 3),
               ));
@@ -98,14 +94,8 @@ class _NewsCardState extends State<NewsCard> {
             await launchURL(context, widget.newsArticle.url);
           },
           child: Container(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height / 2.5,
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
+            height: MediaQuery.of(context).size.height / 2.5,
+            width: MediaQuery.of(context).size.width,
             child: Card(
               child: Column(
                 children: <Widget>[
@@ -114,14 +104,8 @@ class _NewsCardState extends State<NewsCard> {
                     child: FittedBox(
                       fit: BoxFit.fill,
                       child: FadeInImage.memoryNetwork(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height / 4,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height / 4,
                           fit: BoxFit.fill,
                           placeholder: kTransparentImage,
                           image: widget.newsArticle.urlToImage ??
@@ -133,7 +117,7 @@ class _NewsCardState extends State<NewsCard> {
                     child: Text(
                       widget.newsArticle.title ?? "",
                       style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                       softWrap: true,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -144,7 +128,7 @@ class _NewsCardState extends State<NewsCard> {
                     child: Text(
                       widget.newsArticle.content ?? "",
                       style:
-                      TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
                       softWrap: true,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
